@@ -1,0 +1,34 @@
+<%- include('partials/header.ejs') %>
+
+<main class="container">
+    <div class="login">
+
+        <!-- Brief description -->
+        <div class="apresentation">
+            <h1>Book Notes</h1>
+            <p>Book Notes helps you organize the books you read.</p>
+        </div>
+
+        <!-- Input form -->
+        <div class="form">
+
+            <!-- -->
+            <form action="/login" method="post">
+                <input type="text" name="nickname" id="nickname" placeholder="Nickname" maxlength="50" required>
+
+                <input type="password" name="password" id="password" placeholder="Password" minlength="4" maxlength="16" required>
+
+                <button type="submit" id="enter">Enter</button>
+            </form>
+
+            <hr>
+
+            <!-- Button for account creation screen -->
+            <form action="/create-account" method="get">
+                <button type="submit" class="create-account">Create new account</button>
+            </form>
+        </div>
+    </div>
+</main>
+
+<%- include('partials/footer.ejs') %>

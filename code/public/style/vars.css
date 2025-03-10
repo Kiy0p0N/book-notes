@@ -1,0 +1,12 @@
+@font-face {
+    font-family: "Permanent Maker";
+    src: url(/font/Permanent_Marker/PermanentMarker-Regular.ttf);
+}
+
+:root{
+    --font-title: "Permanent Maker";
+
+    --light-gray: #fbfbfb;
+    --light-blue: #7fceff;
+    --light-green: #94ff81;
+}

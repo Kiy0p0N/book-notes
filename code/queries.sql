@@ -1,0 +1,7 @@
+CREATE DATABASE book-notes;
+
+CREATE TABLE users(
+	id SERIAL PRIMARY KEY,
+	nickname VARCHAR(50) NOT NULL UNIQUE,
+	password VARCHAR(16) NOT NULL
+);
