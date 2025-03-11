@@ -29,12 +29,12 @@ O Book Notes permite que usuários criem contas e façam login para gerenciar su
 
 1. Clone o repositório:
    ```sh
-   git clone https://github.com/seu-usuario/seu-repositorio.git
+   git clone https://github.com/Kiy0p0N/book-notes.git
    ```
 
 2. Acesse a pasta do projeto:
    ```sh
-   cd nome-do-projeto
+   cd seu-repositório
    ```
 
 3. Instale as dependências:
@@ -65,8 +65,8 @@ O Book Notes permite que usuários criem contas e façam login para gerenciar su
 
 ## 📌 Funcionalidades
 
-- [ ] Criar conta de usuário
-- [ ] Login de usuário
+- [X] Criar conta de usuário
+- [X] Login de usuário
 - [ ] Gerenciamento de livros lidos (futuro desenvolvimento)
 
 ## 📖 Aprendizado
