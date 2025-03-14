@@ -67,7 +67,7 @@ O Book Notes permite que usuários criem contas e façam login para gerenciar su
 
 - [X] Criar conta de usuário
 - [X] Login de usuário
-- [ ] Gerenciamento de livros lidos (futuro desenvolvimento)
+- [X] Adição de novos livros
 
 ## 📖 Aprendizado
 

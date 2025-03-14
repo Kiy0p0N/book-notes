@@ -9,26 +9,28 @@
             <p>Book Notes helps you organize the books you read.</p>
         </div>
 
-        <!-- Input form -->
+        <!-- Login form -->
         <div class="form">
-
-            <!-- -->
             <form action="/login" method="post">
-                <input type="text" name="nickname" id="nickname" placeholder="Nickname" maxlength="50" required>
+                <!-- Nickname input -->
+                <input type="text" name="nickname" id="nickname" placeholder="Enter your nickname" maxlength="50" required>
 
-                <input type="password" name="password" id="password" placeholder="Password" minlength="4" maxlength="16" required>
+                <!-- Password input -->
+                <input type="password" name="password" id="password" placeholder="Enter your password" minlength="4" maxlength="16" required>
 
-                <p style="color: red; font-size: 0.8rem;"><%= locals.error %></p>
+                <!-- Display error message only if it exists -->
+                <% if (locals.error) { %>
+                    <p class="error-message"><%= locals.error %></p>
+                <% } %>
 
-                <button type="submit" id="enter">Enter</button>
+                <!-- Submit button -->
+                <button type="submit" id="enter" class="btn">Enter</button>
             </form>
 
             <hr>
 
-            <!-- Button for account creation screen -->
-            <form action="/create-account" method="get">
-                <button type="submit" class="create-account">Create new account</button>
-            </form>
+            <!-- Link to create an account -->
+            <a href="/create-account" class="create-account btn">Create new account</a>
         </div>
     </div>
 </main>

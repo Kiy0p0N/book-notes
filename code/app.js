@@ -16,22 +16,32 @@ app.use(express.static('public'));
 // Middleware to parse incoming JSON data from the request body
 app.use(express.json());
 // Middleware to parse URL-encoded form data from the request body
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// Variable to store the logged-in user (this approach is not ideal since it stores user data in memory, 
-// making it unsuitable for multiple users. Consider using sessions instead.)
+// Function to search for a book by title using the Open Library API
+async function searchBook(title) {
+    const url = `https://openlibrary.org/search.json?title=${encodeURIComponent(title)}`;
+    try {
+        const response = await axios.get(url);
+        const book = response.data.docs[0];
+        return book;
+    } catch (error) {
+        console.error("Book not found.");
+        throw new Error("Book not found.");
+    }
+}
+
+// Store user data in memory (this is temporary)
 let user;
 
 // Route handler for the home page (GET request to '/')
-app.get("/", async (req, res) => {
-    // Render the 'index.ejs' view when the home page is accessed
-    res.render("index.ejs");
+app.get("/", (req, res) => {
+    res.render("index.ejs"); // Render the 'index.ejs' view when the home page is accessed
 });
 
 // Route handler for the 'create-account' page (GET request to '/create-account')
-app.get("/create-account", async (req, res) => {
-    // Render the 'create-account.ejs' view when the create account page is accessed
-    res.render("create-account.ejs");
+app.get("/create-account", (req, res) => {
+    res.render("create-account.ejs"); // Render the 'create-account.ejs' view
 });
 
 // Route to handle new account creation (POST request to '/new-account')
@@ -39,15 +49,11 @@ app.post("/new-account", async (req, res) => {
     try {
         // Send the user's form data to the API for account creation
         await axios.post(`${API_URL}/create-account`, req.body);
-        
-        // Redirect to the home page on success
-        res.redirect("/");
+        res.redirect("/"); // Redirect to the home page on success
     } catch (error) {
         console.error(error);
-
-        // If there's an error (e.g., username is taken), re-render the create account page with an error message
         res.render("create-account.ejs", {
-            error: "*This username is not available. Please choose another one."
+            error: "*This username is not available. Please choose another one." // Display error message
         });
     }
 });
@@ -55,35 +61,71 @@ app.post("/new-account", async (req, res) => {
 // Route to handle user login (POST request to '/login')
 app.post("/login", async (req, res) => {
     try {
-        // Send login credentials to the API for authentication
-        const result = await axios.post(`${API_URL}/login`, req.body);
-        
-        console.log(result.data);
+        const result = await axios.post(`${API_URL}/login`, req.body); // Send login credentials to the API
+        user = result.data; // Store the authenticated user data in memory
 
-        // Store the authenticated user data (again, storing in a variable is not recommended for production)
-        user = result.data;
-
-        // Check if the provided credentials match the stored user data
-        if (user.nickname == req.body.nickname && user.password == req.body.password) {
-            // If login is successful, render the books page
-            res.render("books.ejs");
+        // Check if credentials match the stored user data
+        if (user.nickname === req.body.nickname && user.password === req.body.password) {
+            res.redirect("/books"); // Redirect to books page if login is successful
         } else {
-            // If credentials are incorrect, re-render the login page with an error message
-            res.render("index.ejs", {
-                error: "*The nickname or password is incorrect."
-            });
+            res.render("index.ejs", { error: "*The nickname or password is incorrect." }); // Show error if credentials are incorrect
         }
     } catch (error) {
         console.error(error);
+        res.render("index.ejs", { error: "*The nickname or password is incorrect." }); // Show error if login fails
+    }
+});
 
-        // If an error occurs (e.g., invalid login), re-render the login page with an error message
-        res.render("index.ejs", {
-            error: "*The nickname or password is incorrect."
-        });
+// Route to display books (GET request to '/books')
+app.get("/books", async (req, res) => {
+    try {
+        const result = await axios.get(`${API_URL}/books`); // Fetch books from the API
+        const books = result.data;
+        res.render("books.ejs", { user: user.nickname, books: books }); // Render the books page
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error fetching books");
+    }
+});
+
+// Route to display the new book creation page (GET request to '/books/new')
+app.get("/books/new", (req, res) => {
+    res.render("new-book.ejs", { user: user.nickname }); // Render the new book page
+});
+
+// Route to search for a book (POST request to '/books/new/search')
+app.post("/books/new/search", async (req, res) => {
+    try {
+        const result = await searchBook(req.body.book_title); // Search for the book using the searchBook function
+        res.render("new-book.ejs", { user: user.nickname, book: result }); // Display the book details
+    } catch (error) {
+        res.render("new-book.ejs", { user: user.nickname, error: "*The book is not found." }); // Show error if book is not found
+    }
+});
+
+// Route to create a new book note (POST request to '/books/new/create')
+app.post("/books/new/create", async (req, res) => {
+    const { title, author, score, note, cover } = req.body; // Destructure form data
+
+    const book = {
+        title,
+        author,
+        score: parseInt(score, 10),
+        note,
+        cover,
+        user_id: user.id, // Attach user ID
+    };
+
+    try {
+        await axios.post(`${API_URL}/books/add`, book); // Send the new book data to the API
+        res.redirect("/books"); // Redirect to the books page after successfully adding the book
+    } catch (error) {
+        console.error(error);
+        res.redirect("/books"); // Redirect back to the books page if an error occurs
     }
 });
 
 // Start the server and listen on the specified port, logging a success message to the console
 app.listen(port, () => {
-    console.log(`Running on port ${port}`);  // Log that the server is running
+    console.log(`Running on port ${port}`);
 });

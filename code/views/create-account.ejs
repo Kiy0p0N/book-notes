@@ -10,16 +10,23 @@
 
             <hr>
 
-            <!-- Input form -->
+            <!-- Registration form -->
             <form action="/new-account" method="post">
-                <input type="text" name="nickname" id="nickname" placeholder="Nickname" maxlength="50" required>
+                <!-- Nickname input -->
+                <label for="nickname">Nickname</label>
+                <input type="text" name="nickname" id="nickname" placeholder="Enter your nickname" maxlength="50" required>
 
-                <p style="color: red; font-size: 0.8rem;"><%= locals.error %></p>
+                <!-- Display error message only if it exists -->
+                <% if (locals.error) { %>
+                    <p class="error-message"><%= locals.error %></p>
+                <% } %>
 
-                <input type="text" name="password" id="password" placeholder="Password"
-                maxlength="16" required>
+                <!-- Password input -->
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" placeholder="Enter your password" maxlength="16" required>
 
-                <button type="submit" class="create-account">Create account</button>
+                <!-- Submit button -->
+                <button type="submit" class="create-account">Create Account</button>
             </form>
         </div>
     </div>

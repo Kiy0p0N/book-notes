@@ -30,9 +30,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Middleware to parse JSON data from the request body
 app.use(express.json());
 
-/**
- * Route to handle account creation (POST request to '/create-account')
- */
+let user;
+
+// Route to handle account creation (POST request to '/create-account')
 app.post("/create-account", async (req, res) => {
     let nickname = req.body.nickname;
     let password = req.body.password;
@@ -55,9 +55,7 @@ app.post("/create-account", async (req, res) => {
     }
 });
 
-/**
- * Route to handle user login (POST request to '/login')
- */
+// Route to handle user login (POST request to '/login')
 app.post("/login", async (req, res) => {
     const nickname = req.body.nickname;
     const password = req.body.password;
@@ -69,8 +67,10 @@ app.post("/login", async (req, res) => {
             [nickname, password]
         );
 
+        user = response.rows[0];
+
         // If a user is found, return the user data
-        res.json(response.rows[0]);
+        res.json(user);
 
     } catch (error) {
         console.error(error);
@@ -80,7 +80,53 @@ app.post("/login", async (req, res) => {
     }
 });
 
+// Route to handle displaying books for a specific user (GET request to '/books')
+app.get("/books", async (req, res) => {
+    try {
+        // Query the books related to the user from the database
+        const response = await db.query(
+            "SELECT * FROM books WHERE user_id = $1 ORDER BY score DESC",
+            [user.id]
+        );
+
+        // Send the list of books as the response
+        res.json(response.rows);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Error fetching books" });
+    }
+});
+
+// Route to handle adding a new book (POST request to '/books/add')
+app.post("/books/add", async (req, res) => {
+    // Extract book data from the request body
+    const { title, author, cover, score, note, user_id } = req.body;
+
+    console.log(title, author, cover, score, note, user_id);
+
+    // Ensure that the required fields are provided
+    if (!title || !author ||  !cover || !score || !note || !user_id) {
+        return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    try {
+        // Insert the new book into the 'books' table in the database
+        await db.query(
+            "INSERT INTO books (title, author, img_link, score, user_id, notes) VALUES ($1, $2, $3, $4, $5, $6)",
+            [title, author, cover, score, user_id, note]
+        );
+
+        // Respond with a success message
+        res.status(201).json({ message: "Book added successfully" });
+    } catch (error) {
+        console.error(error);
+        
+        // If an error occurs, return a 500 status with an error message
+        res.status(500).json({ error: "Error adding book" });
+    }
+});
+
 // Start the server and listen on the specified port, logging a success message to the console
 app.listen(port, () => {
-    console.log(`Running on port ${port}`);  // Log that the server is running
+    console.log(`Running on port ${port}`);
 });

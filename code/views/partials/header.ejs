@@ -11,7 +11,13 @@
     <link rel="stylesheet" href="/style/header-footer.css">
     <link rel="stylesheet" href="/style/main.css">
     <link rel="stylesheet" href="/style/form.css">
+    <link rel="stylesheet" href="/style/book.css">
     <link rel="stylesheet" href="/style/media-queries.css">
 </head>
 <body>
     
+<% if(locals.user){ %>
+    <header>
+        <h1>Book Notes by <%= user %></h1>
+    </header>
+<% } %>
