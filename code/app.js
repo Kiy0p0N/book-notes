@@ -125,6 +125,21 @@ app.post("/books/new/create", async (req, res) => {
     }
 });
 
+// Route to delete the book (Get request to '/books/delete/:id')
+app.get("/books/delete/:id", async (req, res) => {
+    // Extract book id
+    const bookId = req.params.id;
+
+    try {
+        await axios.delete(`${API_URL}/books/delete/${bookId}`);  // Delete request to API for delete the book
+        res.redirect("/books");  // Redirect back to the books page after successfully deleting the book
+    } catch (error) {
+        console.error(error);
+        res.redirect("/books");  // Redirect back to the books page if an error occurs
+    }
+});
+            
+
 // Start the server and listen on the specified port, logging a success message to the console
 app.listen(port, () => {
     console.log(`Running on port ${port}`);

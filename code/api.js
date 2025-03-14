@@ -126,6 +126,28 @@ app.post("/books/add", async (req, res) => {
     }
 });
 
+// Route to delete the book (Delete request to '/books/delete/:id')
+app.delete("/books/delete/:id", async (req, res) => {
+    // Extract book id
+    const bookId = req.params.id;
+
+    try {
+        // Delete the book according to the id
+        await db.query(
+            "DELETE FROM books WHERE id = $1",
+            [bookId]
+        );
+
+        // Respond with a success message
+        res.status(201).json({ message: "Book deleted successfully "});
+    } catch (error) {
+        console.error(error);
+
+        // If an error occurs, return a 500 status with an error message
+        return res.status(400).json({ error: "Error deleting book" });
+    }
+});
+
 // Start the server and listen on the specified port, logging a success message to the console
 app.listen(port, () => {
     console.log(`Running on port ${port}`);

@@ -53,6 +53,9 @@ h4{
     gap: 15px;
 }
 
+.delete-btn a{
+    background-color: var(--light-red);
+}
 
 
 .add-book-button {

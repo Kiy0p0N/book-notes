@@ -30,6 +30,14 @@
     .book__info{
         text-align: center;
     }
+
+    .search-book input{
+        width: 80%;
+    }
+
+    .create-book{
+        width: 80%;
+    }
 }
 
 @media (max-width: 700px){
@@ -39,6 +47,10 @@
     }
 
     .books__container{
+        width: 95%;
+    }
+
+    .create-book{
         width: 95%;
     }
 }

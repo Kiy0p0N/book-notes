@@ -18,6 +18,11 @@
                         <h3>Author: <%= book.author %></h3>
                         <h4>Recommendation: <%= book.score %>/10</h4>
                         <p><%= book.notes %></p>
+
+                        <!-- Delete book -->
+                        <div class="delete-btn">
+                            <a class="btn" href="/books/delete/<%= book.id %>">Delete book</a>
+                        </div>
                     </div>
                 </div>
             </div>
